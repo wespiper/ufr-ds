@@ -11,6 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Environment info
+        run: |
+          echo "Python:" && python --version
+          echo "Pip:" && python -m pip --version
+          echo "Node:" && node --version || true
+          echo "NPM:" && npm --version || true
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -21,18 +27,15 @@ jobs:
           pip install -e .
       - name: Sanity run - regex tokenizer
         run: |
-          python -m ufr_ds.cli analyze examples/react-mini --pretty
+          python -m ufr_ds.cli analyze examples/react-mini --pretty || (echo "Regex analyze failed" && exit 1)
       - name: Setup Node for tokenizer
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: tools/js-tokenizer/package-lock.json
       - name: Install tokenizer deps
         run: |
           cd tools/js-tokenizer && npm install
       - name: Sanity run - AST tokenizer two-step
         run: |
-          node tools/js-tokenizer/index.js examples/react-mini > tokens.json
-          python -m ufr_ds.cli analyze examples/react-mini --tokens tokens.json --pretty
-
+          node tools/js-tokenizer/index.js examples/react-mini > tokens.json || (echo "Node tokenizer failed" && cat tokens.json || true && exit 1)
+          python -m ufr_ds.cli analyze examples/react-mini --tokens tokens.json --pretty || (echo "Tokens analyze failed" && cat tokens.json && exit 1)
