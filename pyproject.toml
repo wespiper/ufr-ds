@@ -8,9 +8,14 @@ version = "0.1.0"
 description = "UFR Design System analyzer and generator (Emergence Engine–powered)"
 readme = "README.md"
 requires-python = ">=3.9"
-license = {text = "Proprietary"}
+license = {text = "MIT"}
 authors = [{name = "UFR", email = "dev@ufr.example"}]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/wespiper/ufr-ds"
+Repository = "https://github.com/wespiper/ufr-ds"
+Issues = "https://github.com/wespiper/ufr-ds/issues"
 
 [project.scripts]
 ufr = "ufr_ds.cli:main"
@@ -18,4 +23,3 @@ ufr = "ufr_ds.cli:main"
 [tool.setuptools]
 packages = ["ufr_ds", "emergence_engine"]
 include-package-data = true
-

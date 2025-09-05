@@ -1,5 +1,9 @@
 # UFR Design System - Enhanced Technical Specification
 
+[![CI](https://github.com/wespiper/ufr-ds/actions/workflows/ci.yml/badge.svg)](https://github.com/wespiper/ufr-ds/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/ufr-ds.svg)](https://pypi.org/project/ufr-ds/)
+[![npm (tokenizer)](https://img.shields.io/npm/v/%40ufr/ast-tokenizer.svg)](https://www.npmjs.com/package/@ufr/ast-tokenizer)
+
 ## Executive Summary
 
 ### What We're Building

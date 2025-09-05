@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Python package
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Sanity run - regex tokenizer
+        run: |
+          python -m ufr_ds.cli analyze examples/react-mini --pretty
+      - name: Setup Node for tokenizer
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: tools/js-tokenizer/package-lock.json
+      - name: Install tokenizer deps
+        run: |
+          cd tools/js-tokenizer && npm install
+      - name: Sanity run - AST tokenizer two-step
+        run: |
+          node tools/js-tokenizer/index.js examples/react-mini > tokens.json
+          python -m ufr_ds.cli analyze examples/react-mini --tokens tokens.json --pretty
+
