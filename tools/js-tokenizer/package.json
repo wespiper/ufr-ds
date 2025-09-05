@@ -1,0 +1,24 @@
+{
+  "name": "@ufr/ast-tokenizer",
+  "version": "0.1.0",
+  "main": "index.js",
+  "bin": {
+    "ufr-tokenize": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"No tests\""
+  },
+  "files": [
+    "index.js",
+    "README.md"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "description": "Babel-based tokenizer for React/TS projects (emits UFR tokens JSON)",
+  "dependencies": {
+    "@babel/parser": "^7.28.4",
+    "@babel/traverse": "^7.28.4",
+    "fast-glob": "^3.3.3"
+  }
+}

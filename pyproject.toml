@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ufr-ds"
+version = "0.1.0"
+description = "UFR Design System analyzer and generator (Emergence Engine–powered)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "Proprietary"}
+authors = [{name = "UFR", email = "dev@ufr.example"}]
+dependencies = []
+
+[project.scripts]
+ufr = "ufr_ds.cli:main"
+
+[tool.setuptools]
+packages = ["ufr_ds", "emergence_engine"]
+include-package-data = true
+
