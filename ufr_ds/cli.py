@@ -131,6 +131,21 @@ def cmd_analyze(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_report(args: argparse.Namespace) -> int:
+    from .report import render_markdown_report, render_llm_summary
+    data = json.loads(Path(args.analysis).read_text(encoding='utf-8'))
+    md = render_markdown_report(data)
+    if getattr(args, 'llm', None):
+        summary = render_llm_summary(data, args.llm)
+        if summary:
+            md += "\n\n## Human Summary (LLM)\n\n" + summary + "\n"
+        else:
+            md += "\n\n_note: LLM summary unavailable (no API key or provider error)._\n"
+    args.out.write_text(md, encoding='utf-8')
+    print(f"Wrote report to {args.out}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="ufr", description="UFR-DS CLI (Emergence-powered)")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -223,18 +238,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
-
-def cmd_report(args: argparse.Namespace) -> int:
-    from .report import render_markdown_report, render_llm_summary
-    data = json.loads(Path(args.analysis).read_text(encoding='utf-8'))
-    md = render_markdown_report(data)
-    if args.llm:
-        summary = render_llm_summary(data, args.llm)
-        if summary:
-            md += "\n\n## Human Summary (LLM)\n\n" + summary + "\n"
-        else:
-            md += "\n\n_note: LLM summary unavailable (no API key or provider error)._\n"
-    args.out.write_text(md, encoding='utf-8')
-    print(f"Wrote report to {args.out}")
-    return 0
