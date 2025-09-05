@@ -14,8 +14,8 @@ from .engine_suggest import suggestions_from_rules
 from .generator import generate_from_suggestions
 
 
-# Define cmd_report early so build_parser can reference it without NameError in CI
-def cmd_report(args: argparse.Namespace) -> int:
+# Self-contained report handler to avoid NameError during parser construction
+def _report_cmd(args: argparse.Namespace) -> int:
     from .report import render_markdown_report, render_llm_summary
     data = json.loads(Path(args.analysis).read_text(encoding='utf-8'))
     md = render_markdown_report(data)
@@ -186,7 +186,7 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("analysis", type=Path, help="Path to JSON payload (from ufr analyze)")
     r.add_argument("--out", type=Path, default=Path("ufr-report.md"), help="Output Markdown file")
     r.add_argument("--llm", choices=["openai", "anthropic"], help="Augment report with LLM-written human-friendly summary")
-    r.set_defaults(func=cmd_report)
+    r.set_defaults(func=_report_cmd)
 
     return p
 
