@@ -14,6 +14,22 @@ from .engine_suggest import suggestions_from_rules
 from .generator import generate_from_suggestions
 
 
+# Define cmd_report early so build_parser can reference it without NameError in CI
+def cmd_report(args: argparse.Namespace) -> int:
+    from .report import render_markdown_report, render_llm_summary
+    data = json.loads(Path(args.analysis).read_text(encoding='utf-8'))
+    md = render_markdown_report(data)
+    if getattr(args, 'llm', None):
+        summary = render_llm_summary(data, args.llm)
+        if summary:
+            md += "\n\n## Human Summary (LLM)\n\n" + summary + "\n"
+        else:
+            md += "\n\n_note: LLM summary unavailable (no API key or provider error)._\n"
+    args.out.write_text(md, encoding='utf-8')
+    print(f"Wrote report to {args.out}")
+    return 0
+
+
 def cmd_analyze(args: argparse.Namespace) -> int:
     # Input source precedence: --tokens JSON > AST tokenizer > regex tokenizer
     tokens: list[str]
@@ -128,21 +144,6 @@ def cmd_analyze(args: argparse.Namespace) -> int:
         print(json.dumps(payload, indent=2))
     else:
         print(json.dumps(payload))
-    return 0
-
-
-def cmd_report(args: argparse.Namespace) -> int:
-    from .report import render_markdown_report, render_llm_summary
-    data = json.loads(Path(args.analysis).read_text(encoding='utf-8'))
-    md = render_markdown_report(data)
-    if getattr(args, 'llm', None):
-        summary = render_llm_summary(data, args.llm)
-        if summary:
-            md += "\n\n## Human Summary (LLM)\n\n" + summary + "\n"
-        else:
-            md += "\n\n_note: LLM summary unavailable (no API key or provider error)._\n"
-    args.out.write_text(md, encoding='utf-8')
-    print(f"Wrote report to {args.out}")
     return 0
 
 
